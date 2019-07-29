@@ -8,11 +8,20 @@ Created on Fri Jan 18 13:38:06 2019
 import numpy as np
 import pandas as pd
 
+# TODO: address all alerts (orange triangles)
+# TODO: remove indent from all comments, add more prominent headers to
+#       demarcate sections.
+
     # Enter File Information Here
 xls = pd.ExcelFile('HTFU Fouled Tube List for Microscope Scanning V15.xlsx')
 microscope_data = pd.read_excel(xls, header = 1)
     # Remove rows and columns that are not needed
-md = microscope_data.drop(["0.5in Scan", "2in Scan","3.5in Scan","neg 1 in","0.5 in Scan", "2 in Scan","3.5 in Scan", "Unnamed: 61","Unnamed: 62"], axis=1)
+md = microscope_data.drop(["0.5in Scan", "2in Scan","3.5in Scan","neg 1 in",
+                           "0.5 in Scan", "2 in Scan","3.5 in Scan",
+                           "Unnamed: 61","Unnamed: 62"], axis=1)
+# TODO: rather than explicitly remove each in your code, add a column
+#       to you spreadsheet that indicates if data should be excluded
+#       then filter based on that column
 md = md[md.Crude != 'Exxon1']
 md = md[md.Crude != 'Exxon2']
 md = md[~((md["Crude"] == 23) & (md["Rig"]  == "HTFU-1"))]
@@ -46,7 +55,7 @@ md2 = md2.mean(level = ['Crude','Twall']).sort_index()
 Low_Rf = md[md["Final Rf"] < 0.0001]
 Low_Rf = Low_Rf.append(No_Rf, sort = True)
     #Filters data abovee the Rf threshold
-High_Rf =  md[md["Final Rf"] > 0.0001]   
+High_Rf =  md[md["Final Rf"] > 0.0001]
     # Filters data with a low thickness
 Low_t = md2[md2["Thickness abs (μm)"] < 6]
     # Filters data with a low Sk
@@ -60,7 +69,7 @@ no_dP_increase = md2[md2["dP %"] < 0.045]
 dP_increase2 = md3[md3["dP %"] > 0.045]
     # Filters data with no DP Increase
 no_dP_increase2 = md3[md3["dP %"] < 0.045]
-    
+
     # filters the data by crude number
 crude18 = md2.loc[[18]]
 crude19 = md2.loc[[19]]
@@ -72,7 +81,7 @@ crude24 = md2.loc[[24]]
 crude25 = md2.loc[[25]]
 crude26 = md2.loc[[26]]
 crude_data = [crude18, crude19, crude20, crude21, crude22, crude23, crude24, crude25, crude26]
-    
+
     # filters the data by wall temperature
 Tw700F = md2.loc[pd.IndexSlice[:, (700.0)], :]
 Tw650F = md2.loc[pd.IndexSlice[:, (650.0)], :]
@@ -91,7 +100,7 @@ nu_count = non_uniform.groupby(level=0).size()
 mu_count = med_uniform.groupby(level=0).size()
 u_count = uniform.groupby(level=0).size()
 uniformity_summary = pd.concat([nu_count, mu_count, u_count], axis = 1)
-uniformity_summary.columns = ["Non-uniform deposits (t/sk<1)", 
+uniformity_summary.columns = ["Non-uniform deposits (t/sk<1)",
                               "Medium uniformity deposits (t/sk>1,<5)",
                               "Uniform deposits t/sk>5"]
 
@@ -126,7 +135,7 @@ def k_stats (crude_data):
     return k_list
 Crude_k_summary = k_stats(crude_data)
 Crude_k_summary = pd.concat(Crude_k_summary, axis = 1)
-Crude_k_summary.columns = ['Cr18 k', 'Cr19 k', 'Cr20 k' , 'Cr21 k', 
+Crude_k_summary.columns = ['Cr18 k', 'Cr19 k', 'Cr20 k' , 'Cr21 k',
                            'Cr22 k', 'Cr23 k', 'Cr24 k', 'Cr25 k', 'Cr26 k']
 
     # calculates uncertainty of thermal conductivity uncertainty for crudes
@@ -138,7 +147,7 @@ def k_uncertainty_stats (crude_data):
     return k_uncertainty_list
 k_uncertainty_summary = k_uncertainty_stats(crude_data)
 k_uncertainty_summary = pd.concat(k_uncertainty_summary, axis = 1)
-k_uncertainty_summary.columns = ['Cr18 k u', 'Cr19 k u', 'Cr20 k u' , 'Cr21 k u', 
+k_uncertainty_summary.columns = ['Cr18 k u', 'Cr19 k u', 'Cr20 k u' , 'Cr21 k u',
                            'Cr22 k u', 'Cr23 k u', 'Cr24 k u', 'Cr25 k u', 'Cr26 k u']
 
     # calculates statistical analysis of Sk for crudes
@@ -151,9 +160,9 @@ def Sk_stats (crude_data):
     return Sk_list
 Crude_Sk_summary = Sk_stats(crude_data)
 Crude_Sk_summary = pd.concat(Crude_Sk_summary, axis = 1)
-Crude_Sk_summary.columns = ['Cr18 Sk', 'Cr19 Sk', 'Cr20 Sk' , 'Cr21 Sk', 
-                           'Cr22 Sk', 'Cr23 Sk', 'Cr24 Sk', 'Cr25 Sk', 'Cr26 Sk']    
-    
+Crude_Sk_summary.columns = ['Cr18 Sk', 'Cr19 Sk', 'Cr20 Sk' , 'Cr21 Sk',
+                           'Cr22 Sk', 'Cr23 Sk', 'Cr24 Sk', 'Cr25 Sk', 'Cr26 Sk']
+
 
    # calculates statistical analysis of deposit uniformity for crudes
 t_sk_list = []
@@ -164,7 +173,7 @@ def t_sk_stats (crude_data):
     return t_sk_list
 Crude_t_Sk_summary = t_sk_stats(crude_data)
 Crude_t_Sk_summary = pd.concat(Crude_t_Sk_summary, axis = 1)
-Crude_t_Sk_summary.columns = ['Cr18 t_Sk', 'Cr19 t_Sk', 'Cr20 t_Sk' , 'Cr21 t_Sk', 
+Crude_t_Sk_summary.columns = ['Cr18 t_Sk', 'Cr19 t_Sk', 'Cr20 t_Sk' , 'Cr21 t_Sk',
                            'Cr22 t_Sk', 'Cr23 t_Sk', 'Cr24 t_Sk', 'Cr25 t_Sk', 'Cr26 t_Sk']
 
 
