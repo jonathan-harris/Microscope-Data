@@ -96,7 +96,7 @@ temp_k_data_uncertainty.loc[25, '650'] = 0.05
 temp_k_data_uncertainty2 = temp_k_data_uncertainty
 
 
-def k_multibar_chart(kdata, figsize=(8, 4), sort_by_API=False):
+def k_multibar_chart(kdata, figsize=(5, 4), sort_by_API=False):
 
 
 
@@ -120,31 +120,37 @@ def k_multibar_chart(kdata, figsize=(8, 4), sort_by_API=False):
               '700': {'col_name': '700',
                       'color': 'maroon',
                       'edgecolor': 'k',
-                      'label': '288°C (700°F)'}
+                      'label': '371°C (700°F)'}
               }
 
     fig = plt.figure(figsize=figsize)
     ax = fig.add_subplot(1, 1, 1, aspect="auto")
 
     # sort prior to plotting
+    labels = []
     if sort_by_API == 1:
-        print(kdata.columns)
-        kdata.sort_values(['Crude API'], ascending=False, inplace=True)
-        labels = []
+
+        kdata = kdata.sort_values(['Crude API'], ascending=False, inplace=True)
+
         for idx in kdata.index.tolist():
             API = str(round(kdata.loc[idx, 'Crude API'], 1))
             label = str(idx) + ' (' + API + ')'
-            labels = np.append(label, labels)
+            labels = np.append(labels, label)
             continue
         R = 90
         X_label = 'Crude number (API)'
 
     else:
-        kdata.sort_index
-        labels = k_data.index.tolist()
+        kdata = kdata.sort_index(ascending=True)
+        for idx in kdata.index.tolist():
+            label = str(idx)
+            labels = np.append(labels, label)
+            continue
+#        labels = k_data.index.tolist()
         R = 0
         X_label = 'Crude number'
-
+    print(kdata)
+    print(labels)
 # TODO: modify label rotation and x-axis label based on sorting option
 
     # Add some text for labels, title and custom x-axis tick labels, etc.
@@ -182,7 +188,7 @@ def k_multibar_chart(kdata, figsize=(8, 4), sort_by_API=False):
     ax.set_xticks(np.arange(len(labels)) + 0.5)
 #    ax.legend(loc=0, bbox_to_anchor=(1.02, 0.9), framealpha=1,
 #              facecolor='white')
-    ax.legend(loc=0, framealpha=1,
+    ax.legend(loc=2, framealpha=1,
               facecolor='white')
     ax.set_ylim(0, round(max_k, 1) + 0.1)
 
@@ -194,7 +200,7 @@ def k_multibar_chart(kdata, figsize=(8, 4), sort_by_API=False):
     return
 
 
-k_multibar_chart(temp_k_data, sort_by_API=True)
+k_multibar_chart(temp_k_data, sort_by_API=False)
 
 
 
