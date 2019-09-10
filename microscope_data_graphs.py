@@ -190,7 +190,7 @@ def k_multibar_chart(kdata, figsize=(5, 4), sort_by_API=False):
 #              facecolor='white')
     ax.legend(loc=2, framealpha=1,
               facecolor='white')
-    ax.set_ylim(0, round(max_k, 1) + 0.1)
+    ax.set_ylim(0, 2)
 
     # show and save figure
     plt.tight_layout()
@@ -320,20 +320,25 @@ t_histogram = histogram(mdata.md["Thickness abs (μm)"], xlim=(0, 200),
 
 
 
-def scatter(data1, data2, xlabel, ylabel, title1, rangea, rangeb):
+def scatter(data1, data2, xlabel, ylabel, title1, scale_x, scale_y, range1, range2, rangea, rangeb):
     plt.scatter(data1, data2, alpha=0.5)
     plt.title(title1)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
-    plt.xlim(0, 70)
+    plt.xscale(scale_x)
+    plt.yscale(scale_y)
+    plt.xlim(range1, range2)
     plt.ylim(rangea, rangeb)
     plt.show()
+    plt.savefig(title1 + ".png")
 #graph of thermal conductivity bs run length for Twall = 700F
 scatter(mdata.Tw700F2["Run Length"],mdata.Tw700F2["k"], xlabel = 'Time (days)', ylabel = 'k (W/ m K)',
-        title1='Twall = 700F, Impact of total run time on thermal conductivity', rangea = 0,rangeb=2)
+        title1='Twall = 700F, Impact of total run time on thermal conductivity',
+        scale_x = "linear",scale_y = "linear", range1=0, range2=70, rangea = 0,rangeb=2)
 #graph of thermal conductivity bs run length for Twall = 650F
 scatter(mdata.Tw650F2["Run Length"], mdata.Tw650F2["k"], xlabel = 'Time (days)', ylabel = 'k (W/ m K)',
-            title1='Twall = 650F,Impact of total run time on thermal conductivity', rangea = 0,rangeb= 2)
+            title1='Twall = 650F,Impact of total run time on thermal conductivity', 
+            scale_x = "linear", scale_y= "linear", range1=0, range2=70, rangea = 0,rangeb= 2)
 
 # Plots the deposit thicknesses for tests with low final Rf values
 
